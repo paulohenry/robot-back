@@ -1,0 +1,26 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "server.js",
+  "license": "MIT",
+  "scripts": {
+    "mind": "nodemon src/Comunicator/server.js"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^2.0.1",
+    "canvas": "^2.6.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "face-api.js": "^0.22.2",
+    "ibm-watson": "5.6.0",
+    "opencv.js": "^1.2.1",
+    "opencv4nodejs": "^5.6.0",
+    "path": "^0.12.7",
+    "socket.io": "^2.3.0",
+    "uuid": "^8.1.0"
+  },
+ 
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
