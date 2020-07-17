@@ -4,7 +4,8 @@
   "main": "server.js",
   "license": "MIT",
   "scripts": {
-    "mind": "nodemon src/Comunicator/server.js"
+    "mind": "nodemon src/Comunicator/server.js",
+    "prod":"src/Comunicator/server.js"
   },
   "dependencies": {
     "@tensorflow/tfjs-node": "^2.0.1",

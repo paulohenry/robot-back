@@ -28,8 +28,7 @@ const assistant_v2 = new AssistantV2({
   url: watsonconfig.url,
   disableSslVerification: true,
   headers: {
-    'X-Watson-Learning-Opt-Out': 'true',
-    
+    "X-Watson-Learning-Opt-Out": "true",    
   }
 });
 
@@ -62,28 +61,84 @@ module.exports.chatMessage = async(data) =>{
     })
   return response_v2
 }
-const params = {
-  workspaceId:process.env.SKILL_ID
-}
 
-module.exports.listIntents = async()=>{
-    await assistant_v1.listIntents(params)
+module.exports.createIntents = async(date)=>{
+  await assistant_v1.createIntent({
+    workspaceId:process.env.SKILL_ID,
+    includeAudit:true,
+    intent:date.intent,
+    description:date.description,
+    examples:[]
+  })
     .then(res=>{
-      response_v1 = res.result
+      response_v1 = res
+    })
+    .catch(err=>{
+      response_v1 = err
+    })
+    return response_v1
+}
+module.exports.listIntents = async()=>{
+    await assistant_v1.listIntents({
+      workspaceId:process.env.SKILL_ID,
+      _export:true,
+      includeAudit:true,
+      pageLimit:20,
+      sort:'updated',
+      
+    })
+    .then(res=>{
+      response_v1 = res
     })
     .catch(err=>{
       response_v1 = err
     })
     return response_v1
 } 
-
-module.exports.listWorkspaces = async()=>{
-  await assistant_v1.listWorkspaces()
+module.exports.removeIntent = async(data)=>{
+  await assistant_v1.deleteIntent({
+    workspaceId:process.env.SKILL_ID,
+    intent:data.intent,    
+})
+.then(res=>{ 
+  console.log(res)
+  response_v1=res
+})
+.catch(err=>{
+  console.log(err)  
+  response_v1=err
+})
+return response_v1
+}
+module.exports.removeExample = async(data)=>{
+  await assistant_v1.deleteExample({
+      workspaceId:process.env.SKILL_ID,
+      intent:data.intent,
+      text:data.text
+  })
   .then(res=>{
-    response_v1 = res.result
+    
+    response_v1=res
   })
   .catch(err=>{
-    response_v1 = err
+   
+    response_v1=err
   })
   return response_v1
-} 
+}
+
+module.exports.createExample = async(data)=>{
+  await assistant_v1.createExample({
+      workspaceId:process.env.SKILL_ID,
+      intent:data.intent,
+      text:data.text,
+      includeAudit:true,
+  })
+  .then(res=>{
+    response_v1=res
+  })
+  .catch(err=>{
+    response_v1=err
+  })
+  return response_v1
+}

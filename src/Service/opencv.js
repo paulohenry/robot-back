@@ -52,6 +52,3 @@ module.exports.cam = (face=false)=>{
   return data
 }
 
-module.exports.stop = async ()=>{
-  await  wCap.release()  
-}
