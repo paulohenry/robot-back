@@ -88,7 +88,37 @@ routes.post('/delete-example',async(req,res)=>{
   }
 })
 
-
+routes.get('/list-dialog', async (req,res)=>{
+  try{
+    const response = await ibm.listResponse()
+    if(response.status === 200){
+    return res.status(200).json(response)
+    }else if(response.status === 400){
+      return res.status(400).json(response)
+    }
+  }catch(err){
+    return res.status(500).json({
+      message:'erro ao listar resposta do robô erro interno 500',
+      error:err
+    })
+  } 
+})
+routes.post('/delete-dialog',async(req,res)=>{
+  const data = req.body   
+  try {
+    const response = await ibm.removeResponse(data)
+    if(response.status===200){       
+      return res.status(204).json(response)        
+    }else if(response.status===400){
+      return res.status(400).json(response)
+    }    
+  } catch (err) {   
+    return res.status(500).json({
+      message:'erro ao deletar dialogo, erro interno 500',
+      error:err
+  })
+}
+})
 
 
 module.exports.routes=routes

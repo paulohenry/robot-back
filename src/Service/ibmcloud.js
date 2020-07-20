@@ -142,3 +142,28 @@ module.exports.createExample = async(data)=>{
   })
   return response_v1
 }
+module.exports.listResponse = async()=>{
+  await assistant_v1.listDialogNodes({
+    workspaceId:process.env.SKILL_ID
+  })
+  .then(res=>{
+    response_v1=res
+  })
+  .catch(err=>{
+    response_v1=err
+  })
+  return response_v1
+}
+module.exports.removeResponse = async(data)=>{
+  await assistant_v1.deleteDialogNode({
+    workspaceId:process.env.SKILL_ID,
+    dialogNode:data.dialog_node
+  })
+  .then(res=>{
+    response_v1=res
+  })
+  .catch(err=>{
+    response_v1=err
+  })
+  return response_v1
+}
