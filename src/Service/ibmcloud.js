@@ -101,7 +101,6 @@ module.exports.removeIntent = async(data)=>{
     intent:data.intent,    
 })
 .then(res=>{ 
-  console.log(res)
   response_v1=res
 })
 .catch(err=>{
@@ -154,7 +153,7 @@ module.exports.listResponse = async()=>{
   })
   return response_v1
 }
-module.exports.removeResponse = async(data)=>{
+module.exports.removeDialog = async(data)=>{
   await assistant_v1.deleteDialogNode({
     workspaceId:process.env.SKILL_ID,
     dialogNode:data.dialog_node
@@ -164,6 +163,37 @@ module.exports.removeResponse = async(data)=>{
   })
   .catch(err=>{
     response_v1=err
+  })
+  return response_v1
+}
+module.exports.createDialog = async(data)=>{
+  await assistant_v1.createDialogNode({
+    workspaceId:process.env.SKILL_ID,
+    title:data.title,
+    conditions:data.conditions,
+    dialogNode:data.title,
+    output:data.output
+  })
+  .then(res=>{
+    response_v1=res;
+  })
+  .catch(err=>{
+    response_v1=err;
+  })
+  return response_v1
+}
+module.exports.updateDialog = async(data)=>{
+  await assistant_v1.updateDialogNode({
+    workspaceId:process.env.SKILL_ID,
+    title:data.title,
+    dialogNode:data.title,
+    newOutput:data.newOutput
+  })
+  .then(res=>{
+    response_v1=res;
+  })
+  .catch(err=>{
+    response_v1=err;
   })
   return response_v1
 }

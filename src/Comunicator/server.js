@@ -64,29 +64,21 @@ socket.on('message client' ,async(data)=>{
   
 })
 
+//------------------------------------visao----------------------------------//
 socket.on('startVision', async(data)=>{
     if(data.startVisionCamera===true){
       startVisionCamera=true
     }else if(data.startVisionCamera===false){
       startVisionCamera=false
-      
     }
 })
 
-socket.on('submit_to_train', async(data)=>{
-  
-  coletions_to_train.push()
-
-  socket.emit('take_picture',{
-    colections:coletions_to_train
-  })  
-})
-
-
-
+socket.on('submit_to_train', async(data)=>{  
+        socket.emit('take_picture',{
+      colections:coletions_to_train
+    })  
+  })
 }) 
-
-
 
 setInterval(async()=>{   
   if(camera===true){
@@ -98,7 +90,7 @@ setInterval(async()=>{
   }
 },1000/3)
 
-
+//----------------------------fim visao---------------------------------------//
 
 app.use(express.json())
 app.use((req, res, next) =>{
@@ -111,6 +103,7 @@ server.listen(3001, ()=>{
   console.log('conexao aberta na porta 3001')
 })
 
+//-----------------------------------------------fim api---------------------//
 module.exports = {app}
 
   
