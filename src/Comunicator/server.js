@@ -4,7 +4,7 @@ const server = require('http').Server(app)
 const socketio = require('socket.io')(server)
 const routes = require('../Routes/routes')
 const ibm  = require('../Service/ibmcloud')
-const opencv = require('../Service/opencv')
+// const opencv = require('../Service/opencv')
 
 const coletions_to_train=[]
 let response = ''
@@ -80,15 +80,15 @@ socket.on('submit_to_train', async(data)=>{
   })
 }) 
 
-setInterval(async()=>{   
-  if(camera===true){
-    let data = opencv.cam(true)    
-    socketio.emit('data', data)
-  }else if(startVisionCamera===true){
-    let data = opencv.cam(true)    
-    socketio.emit('data', data)
-  }
-},1000/3)
+// setInterval(async()=>{   
+//   if(camera===true){
+//     let data = opencv.cam(true)    
+//     socketio.emit('data', data)
+//   }else if(startVisionCamera===true){
+//     let data = opencv.cam(true)    
+//     socketio.emit('data', data)
+//   }
+// },1000/3)
 
 //----------------------------fim visao---------------------------------------//
 
