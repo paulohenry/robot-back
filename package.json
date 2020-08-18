@@ -1,24 +1,29 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "main": "server.js",
+  "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "mind": "nodemon src/Comunicator/server.js",
-    "prod":"src/Comunicator/server.js"
+    "dev": "nodemon index.js",
+    "prod": "index.js"
   },
   "dependencies": {
     "@tensorflow/tfjs-node": "^2.0.1",
+    "body-parser": "^1.19.0",
     "canvas": "^2.6.1",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
-    "face-api.js": "^0.22.2",
     "ibm-watson": "5.6.0",
+    "knex": "^0.21.4",
+    "network-info": "^2.0.7",
+    "network-manager": "^1.0.2",
+    "node-wifi": "^2.0.13",
     "path": "^0.12.7",
     "socket.io": "^2.3.0",
+    "sqlite3": "^5.0.0",
     "uuid": "^8.1.0"
   },
- 
   "devDependencies": {
     "nodemon": "^2.0.4"
   }
