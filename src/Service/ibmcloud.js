@@ -1,41 +1,50 @@
 const AssistantV2 = require('ibm-watson/assistant/v2');
 const AssistantV1 = require('ibm-watson/assistant/v1')
 const { IamAuthenticator } = require('ibm-watson/auth');
-const watsonconfig = require('../Config/config-watson')
+
 
 
 let session_id= ''
 let response_v2= ''
 let response_v1=''
 
-// const assistant_v1 = new AssistantV1({
 
-// })
-
-const assistant_v1 = new AssistantV1({
+module.exports.assistanteV1 = (apikey,url)=>{
+  try{
+  const assistant_v1 = new AssistantV1({
   version: '2020-04-01',
-  authenticator: new IamAuthenticator({apikey: watsonconfig.api_key}),
-  url: watsonconfig.url,
+  authenticator: new IamAuthenticator({apikey: apikey}),
+  url: url,
   disableSslVerification: true,
-  headers: {
+  headers:{
     'X-Watson-Learning-Opt-Out': 'true'
-  }
-});
-
-const assistant_v2 = new AssistantV2({
+    }
+  });
+  return assistant_v1
+ }catch(error){
+   return error
+ }
+}
+module.exports.assistanteV2 = (apikey,url)=>{
+  try{
+  const assistant_v2 = new AssistantV2({
   version: '2020-04-01',
-  authenticator: new IamAuthenticator({apikey: watsonconfig.api_key}),
-  url: watsonconfig.url,
+  authenticator: new IamAuthenticator({apikey:apikey}),
+  url: url,
   disableSslVerification: true,
   headers: {
     "X-Watson-Learning-Opt-Out": "true",    
-  }
-});
-
-module.exports.chatMessage = async(data) =>{
+   }
+  });
+  return assistant_v2
+ }catch(error){
+  return error
+ }
+}
+module.exports.chatMessage = async(transcricao, assistantV2,ibm_assistant_id) =>{
   
-  await assistant_v2.createSession({
-    assistantId: process.env.ASSISTANT_ID
+  await assistantV2.createSession({
+    assistantId: ibm_assistant_id
     })
     .then(res => {
       session_id = res.result.session_id   
@@ -44,14 +53,14 @@ module.exports.chatMessage = async(data) =>{
     })
     .catch(err => {
       session_id = err
-      })
+    })
   
-  await assistant_v2.message({
-    assistantId: process.env.ASSISTANT_ID,
+  await assistantV2.message({
+    assistantId: ibm_assistant_id,
     sessionId: session_id ,
     input: {
       'message_type': 'text',
-      'text': data.fala
+      'text': transcricao
       }})
     .then(res => {
      response_v2=res   
@@ -62,12 +71,12 @@ module.exports.chatMessage = async(data) =>{
   return response_v2
 }
 
-module.exports.createIntents = async(date)=>{
-  await assistant_v1.createIntent({
-    workspaceId:process.env.SKILL_ID,
+module.exports.createIntents = async(intent,description,assistantV1,skill_id)=>{
+  await assistantV1.createIntent({
+    workspaceId:skill_id,
     includeAudit:true,
-    intent:date.intent,
-    description:date.description,
+    intent:intent,
+    description:description,
     examples:[]
   })
     .then(res=>{
@@ -78,9 +87,9 @@ module.exports.createIntents = async(date)=>{
     })
     return response_v1
 }
-module.exports.listIntents = async()=>{
-    await assistant_v1.listIntents({
-      workspaceId:process.env.SKILL_ID,
+module.exports.listIntents = async(assistantV1,skill_id)=>{
+    await assistantV1.listIntents({
+      workspaceId:skill_id,
       _export:true,
       includeAudit:true,
       pageLimit:20,
@@ -95,10 +104,11 @@ module.exports.listIntents = async()=>{
     })
     return response_v1
 } 
-module.exports.removeIntent = async(data)=>{
-  await assistant_v1.deleteIntent({
-    workspaceId:process.env.SKILL_ID,
-    intent:data.intent,    
+module.exports.removeIntent = async(intent,assistantV1,skill_id)=>{
+
+  await assistantV1.deleteIntent({
+    workspaceId:skill_id,
+    intent:intent,    
 })
 .then(res=>{ 
   response_v1=res
@@ -109,11 +119,11 @@ module.exports.removeIntent = async(data)=>{
 })
 return response_v1
 }
-module.exports.removeExample = async(data)=>{
-  await assistant_v1.deleteExample({
-      workspaceId:process.env.SKILL_ID,
-      intent:data.intent,
-      text:data.text
+module.exports.removeExample = async(intent,text,assistantV1,skill_id)=>{
+  await assistantV1.deleteExample({
+      workspaceId:skill_id,
+      intent:intent,
+      text:text
   })
   .then(res=>{
     
@@ -126,11 +136,11 @@ module.exports.removeExample = async(data)=>{
   return response_v1
 }
 
-module.exports.createExample = async(data)=>{
-  await assistant_v1.createExample({
-      workspaceId:process.env.SKILL_ID,
-      intent:data.intent,
-      text:data.text,
+module.exports.createExample = async(intent,text,assistantV1,skill_id)=>{
+  await assistantV1.createExample({
+      workspaceId:skill_id,
+      intent:intent,
+      text:text,
       includeAudit:true,
   })
   .then(res=>{
@@ -141,9 +151,9 @@ module.exports.createExample = async(data)=>{
   })
   return response_v1
 }
-module.exports.listResponse = async()=>{
-  await assistant_v1.listDialogNodes({
-    workspaceId:process.env.SKILL_ID
+module.exports.listDialog = async(assistantV1,skill_id)=>{
+  await assistantV1.listDialogNodes({
+    workspaceId:skill_id
   })
   .then(res=>{
     response_v1=res
@@ -153,10 +163,10 @@ module.exports.listResponse = async()=>{
   })
   return response_v1
 }
-module.exports.removeDialog = async(data)=>{
-  await assistant_v1.deleteDialogNode({
-    workspaceId:process.env.SKILL_ID,
-    dialogNode:data.dialog_node
+module.exports.removeDialog = async(dialog_node,assistantV1,skill_id)=>{
+  await assistantV1.deleteDialogNode({
+    workspaceId:skill_id,
+    dialogNode:dialog_node
   })
   .then(res=>{
     response_v1=res
@@ -166,13 +176,13 @@ module.exports.removeDialog = async(data)=>{
   })
   return response_v1
 }
-module.exports.createDialog = async(data)=>{
-  await assistant_v1.createDialogNode({
-    workspaceId:process.env.SKILL_ID,
-    title:data.title,
-    conditions:data.conditions,
-    dialogNode:data.title,
-    output:data.output
+module.exports.createDialog = async(request,assistantV1,skill_id)=>{
+  await assistantV1.createDialogNode({
+    workspaceId:skill_id,
+    title:request.title,
+    conditions:request.conditions,
+    dialogNode:request.title,
+    output:request.output
   })
   .then(res=>{
     response_v1=res;
@@ -182,12 +192,12 @@ module.exports.createDialog = async(data)=>{
   })
   return response_v1
 }
-module.exports.updateDialog = async(data)=>{
-  await assistant_v1.updateDialogNode({
-    workspaceId:process.env.SKILL_ID,
-    title:data.title,
-    dialogNode:data.title,
-    newOutput:data.newOutput
+module.exports.updateDialog = async(request,assistantV1,skill_id)=>{
+  await assistantV1.updateDialogNode({
+    workspaceId:skill_id,
+    title:request.title,
+    dialogNode:request.title,
+    newOutput:request.newOutput
   })
   .then(res=>{
     response_v1=res;

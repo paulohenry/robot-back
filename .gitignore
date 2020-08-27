@@ -4,13 +4,13 @@
 /node_modules
 /.pnp
 .pnp.js
-/src/Database/database.sqlite3
+# /src/Database/database.sqlite3
 # testing
 /coverage
 
 # production
 /build
-
+.eslintrc.js
 # misc
 .DS_Store
 .env.local

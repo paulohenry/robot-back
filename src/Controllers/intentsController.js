@@ -1,51 +1,67 @@
 const ibm  = require('../Service/ibmcloud')
-
+const knex = require('../Database/connection')
 module.exports = {
-async listIntent(req,res){
+async listIntent(req,res,next){
     try{
-      const response = await ibm.listIntents()
+      const {
+        ibm_api_key, 
+        ibm_url ,
+        ibm_skill_id ,                   
+      } = req.body
+      const assistantV1 = ibm.assistanteV1(ibm_api_key,ibm_url)
+      const response = await ibm.listIntents(assistantV1,ibm_skill_id)
       if(response.status === 200){
       return res.status(200).json(response)
       }else if(response.status === 400){
-        return res.status(400).json(response)
+        return res.status(400).json({
+          message:'erro 400',
+          error:response})
       }
-    }catch(err){
-      return res.status(500).json({
-        message:'erro ao listar intencoes erro interno 500',
-        err
+    }catch(error){
+      return res.status(400).json({
+        message:'erro interno 500',
+        error:error
       })
-    }  
+    }
   },
- async createIntent(req,res){
-  const data = req.body
+ async createIntent(req,res,next){ 
     try{
-    const response = await ibm.createIntents(data)
+    const {
+      ibm_api_key, 
+      ibm_url ,
+      intent ,
+      description,
+      ibm_skill_id     
+    } = req.body
+    const assistantV1 = ibm.assistanteV1(ibm_api_key,ibm_url)
+    const response = await ibm.createIntents(intent,description,assistantV1,ibm_skill_id)
     if(response.status === 201){
       return res.status(201).json(response)
     }else if(response.status === 400){
       return res.status(400).json(response)
     }
-  }catch(err){
-    return res.status(500).json({
-      message:'erro ao cadastrar intencoes erro interno 500',
-      err
-    })
-  }  
+  }catch(error){
+    next(error)
+  }
 },
- async deleteintent(req,res){
-  const data = req.body
-    try{
-    const response = await ibm.removeIntent(data)
+ async deleteIntent(req,res,next){
+   try{
+      const {
+        ibm_api_key, 
+        ibm_url ,
+        ibm_skill_id,
+        intent           
+      } = req.body
+      console.log(req.body)
+    const assistantV1 = ibm.assistanteV1(ibm_api_key,ibm_url)
+    const response = await ibm.removeIntent(intent,assistantV1,ibm_skill_id)
     if(response.status === 200){
       return res.status(200).json(response)
     }else if(response.status === 400){
       return res.status(400).json(response)
     }
-  }catch(err){
-    return res.status(500).json({
-      message:'erro ao remover intencoes erro interno 500',
-      err
-    })
+  }catch(error){
+    next(error)
   }  
 }
   

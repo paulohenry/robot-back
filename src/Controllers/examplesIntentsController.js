@@ -1,37 +1,45 @@
 const ibm  = require('../Service/ibmcloud')
 
 module.exports = {
- async createExample(req,res){
-  const data = req.body
+ async createExample(req,res,next){
   try{
-    const response = await ibm.createExample(data)
+    const {
+      ibm_api_key, 
+      ibm_url ,
+      intent,
+      text,
+      ibm_skill_id   
+    } = req.body
+  const assistantV1 = ibm.assistanteV1(ibm_api_key,ibm_url)
+    const response = await ibm.createExample(intent,text,assistantV1,ibm_skill_id)
     if(response.status === 201){
       return res.status(201).json(response)
     }else if(response.status === 400){
       return res.status(400).json(response)
     }
-  }catch(err){   
-    return res.status(500).json({
-      message:'erro ao criar um exemplo de intenções, erro interno 500',
-      err
-  })
- }
+  }catch(error){
+    next(error)
+  }
 },
 
-  async deleteExample(req,res){
-  const data = req.body   
-  try {
-    const response = await ibm.removeExample(data)
+  async deleteExample(req,res,next){
+    try{
+      const {
+        ibm_api_key, 
+        ibm_url ,
+        intent,
+        text,
+        ibm_skill_id,      
+      } = req.body
+    const assistantV1 = ibm.assistanteV1(ibm_api_key,ibm_url)
+    const response = await ibm.removeExample(intent,text,assistantV1,ibm_skill_id)
     if(response.status===200){       
       return res.status(204).json(response)        
     }else if(response.status===400){
       return res.status(400).json(response)
     }    
-  } catch (err) {   
-    return res.status(500).json({
-      message:'erro ao deletar exemplo de intenções, erro interno 500',
-      err
-  })
+  } catch(error){
+    next(error)
   }
   }
 }
