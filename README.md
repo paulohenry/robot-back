@@ -8,9 +8,9 @@ after clone the repo in yuor PC, run command below
 
 it will install necessary packages
 
-## `run migrates `
+## `npx knex migrate:latest `
 
-on this prohect I use KNEX ORM, so it should run command 
+on this project I use KNEX ORM, so it should run command 
 
 npx knex migrate:latest 
 
