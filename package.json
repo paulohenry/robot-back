@@ -19,7 +19,7 @@
     "network-manager": "^1.0.2",
     "node-wifi": "^2.0.13",
     "path": "^0.12.7",
-    "sqlite3": "^5.0.0",
+    "sqlite3": "^5.0.3",
     "uuid": "^8.1.0"
   },
   "devDependencies": {
